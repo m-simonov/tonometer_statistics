@@ -1,9 +1,10 @@
-import sqlite3
 import datetime
-import pytz
+import sqlite3
 
+import pytz
 from aiogram import types
 
+import db
 from main import bot, dp
 
 
@@ -11,15 +12,27 @@ from main import bot, dp
 async def print_info(message: types.Message):
     text = "Hello"
     await message.answer(text=text)
+    db.add_user(message)
 
-    base = sqlite3.connect('tonometer_results.db')
-    cur = base.cursor()
+@dp.message_handler()
+async def wtite_results(message: types.Message):
+    msk_time = datetime.datetime.now(pytz.timezone('Europe/Moscow'))
+    hour = int(msk_time.strftime('%H'))
+    date_now = msk_time.date()
+    if 0 < hour < 12:
+        time = 'morning'
+    elif 12 < hour < 18:
+        time = 'afternoon'
+    else:
+        time = 'evening'
 
-    tid = message.from_user.id
-    user_name = message.from_user.username
-    first_name = message.from_user.first_name
-    last_name = message.from_user.last_name
-    base.execute('CREATE TABLE IF NOT EXISTS users(tid PRIMARY KEY, username, fitst_name, last_name)')
-    cur.execute('INSERT OR IGNORE INTO users VALUES(?, ?, ?, ?)', (tid, user_name, first_name, last_name))
-    base.commit()
-    base.close()
+    db.insert(
+        'meterings',
+        {
+            'user': message.from_user.id,
+            'date': date_now,
+            time: message.text,
+        }
+    )
+
+    await message.answer(f'{result}')
