@@ -1,14 +1,7 @@
-import datetime
-
-import pytz
 import db
 
 
-msk_time = datetime.datetime.now(pytz.timezone('Europe/Moscow'))
-hour = int(msk_time.strftime('%H'))
-date_now = msk_time.date()
-
-def determine_the_time():
+def determine_the_time(hour: int):
     if 0 < hour < 12:
         column = 'morning'
     elif 12 < hour < 18:
@@ -17,8 +10,8 @@ def determine_the_time():
         column = 'evening'
     return column
 
-def write_to_db(user: str, metering_result: str, column: str):
-    number_of_meterings = db.count_meterings(user, date_now)
+def write_to_db(user: str, date: str, column: str, metering_result: str):
+    number_of_meterings = 3 - db.read_meterings_by_date(user, date).count(None)
     if number_of_meterings == 3:
         text = 'Все данные на сегодня заполнены'
     elif number_of_meterings == 0:
@@ -26,7 +19,7 @@ def write_to_db(user: str, metering_result: str, column: str):
             'meterings',
             {
                 'user': user,
-                'date': date_now,
+                'date': date,
                 column: metering_result,
             }
         )
@@ -34,7 +27,7 @@ def write_to_db(user: str, metering_result: str, column: str):
     else:
         db.update_metering(
             user,
-            date_now,
+            date,
             column,
             metering_result,
         )

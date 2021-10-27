@@ -50,15 +50,14 @@ def update_metering(user: str, date: str, column: str, value: str):
     base.commit()
     base.close()
 
-def count_meterings(user: str, date: str):
+def read_meterings_by_date(user: str, date: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
 
     selected = cur.execute(
-        "SELECT "
-        "COUNT(morning), COUNT(afternoon), COUNT(evening) "
+        "SELECT morning, afternoon, evening "
         "FROM meterings "
         "WHERE user == ? AND date == ?",
         (user, date)
     ).fetchone()
-    return sum(selected)
+    return selected

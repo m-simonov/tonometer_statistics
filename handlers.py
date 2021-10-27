@@ -14,10 +14,12 @@ async def print_info(message: types.Message):
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 async def write_metering(message: types.Message):
     user = message.from_user.id
+    date = message.date.date()
     metering_result = message.text
-    column = metering.determine_the_time()
+    hour = int(message.date.strftime('%H'))
 
-    text = metering.write_to_db(user, metering_result, column)
+    column = metering.determine_the_time(hour)
+    text = metering.write_to_db(user, date, column, metering_result)
     await message.answer(text)
 
 @dp.message_handler()
