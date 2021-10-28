@@ -61,3 +61,13 @@ def read_meterings_by_date(user: str, date: str):
         (user, date)
     ).fetchone()
     return selected
+
+def read_users():
+    base = sqlite3.connect('tonometer.db')
+    cur = base.cursor()
+
+    selected = cur.execute(
+        "SELECT * FROM users"
+    ).fetchall()
+    base.close()
+    return selected
