@@ -1,7 +1,13 @@
+import datetime
+
+import pytz
+
 import db
 
 
-def determine_the_time(hour: int):
+def determine_the_time():
+    msk_time = datetime.datetime.now(pytz.timezone('Europe/Moscow'))
+    hour = int(msk_time.strftime('%H'))
     if 0 < hour < 12:
         column = 'morning'
     elif 12 <= hour < 18:

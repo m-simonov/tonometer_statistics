@@ -36,9 +36,8 @@ async def write_metering(message: types.Message):
     user = message.from_user.id
     date = message.date.date()
     metering_result = message.text
-    hour = int(message.date.strftime('%H'))
 
-    column = metering.determine_the_time(hour)
+    column = metering.determine_the_time()
     text = metering.write_to_db(user, date, column, metering_result)
     await message.answer(text)
 
