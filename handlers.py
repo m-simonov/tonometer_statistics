@@ -11,7 +11,7 @@ load_dotenv()
 admin_id = os.environ.get('admin_id')
 def auth_admin(func):
     async def wrapper(message):
-        if message.from_user.id not in admin_id:
+        if str(message.from_user.id) not in admin_id:
             return await message.answer(text='Access Denied')
         return await func(message)
     return wrapper
@@ -44,8 +44,18 @@ async def print_info(message: types.Message):
 async def show_today_meterings(message: types.Message):
     user = message.from_user.id
     date = message.date.date()
-    text = metering.show_meterings(user, date)
+    text = metering.show_today_meterings(user, date)
     await message.answer(text)
+
+@dp.message_handler(commands=['this_month_results'])
+async def show_this_months_meterings(message: types.Message):
+    user = message.from_user.id
+    date = message.date.date()
+    year = date.strftime('%Y')
+    month = date.strftime('%m')
+
+    text = metering.show_monthly_meterings(user, year, month)
+    await message.answer(text)    
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 async def write_metering(message: types.Message):

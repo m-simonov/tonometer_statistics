@@ -50,6 +50,16 @@ def update_metering(user: str, date: str, column: str, value: str):
     base.commit()
     base.close()
 
+def read_users():
+    base = sqlite3.connect('tonometer.db')
+    cur = base.cursor()
+
+    selected = cur.execute(
+        "SELECT * FROM users"
+    ).fetchall()
+    base.close()
+    return selected
+
 def read_meterings_by_date(user: str, date: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -60,14 +70,18 @@ def read_meterings_by_date(user: str, date: str):
         "WHERE user == ? AND date == ?",
         (user, date)
     ).fetchone()
+    base.close()
     return selected
 
-def read_users():
+def read_monthly_meterings(user: str, year: str, month: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
 
     selected = cur.execute(
-        "SELECT * FROM users"
+        "SELECT * FROM meterings "
+        f"WHERE date LIKE '%{year}-{month}%' "
+        "AND user = ?",
+        (user,)
     ).fetchall()
     base.close()
     return selected

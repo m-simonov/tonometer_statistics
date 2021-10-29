@@ -40,7 +40,7 @@ def write_to_db(user: str, date: str, column: str, metering_result: str):
         text = f"Результат замера '{metering_result}' записан"
     return text
 
-def show_meterings(user: str, date: str):
+def show_today_meterings(user: str, date: str):
     meterings = db.read_meterings_by_date(user, date)
     if meterings:
         morning = meterings[0]
@@ -55,3 +55,15 @@ def show_meterings(user: str, date: str):
     else:
         text = "Сегодняшние замеры еще не внесены"
     return text
+
+def show_monthly_meterings(user: str, year: str, month: str):
+    this_month = db.read_monthly_meterings(user, year, month)
+    text = []
+    for metering in this_month:
+        text.append(
+            f"Дата: {metering[2]}\n"
+            f"Утро: {metering[3]}\n"
+            f"День: {metering[4]}\n"
+            f"Вечер: {metering[5]}\n\n"
+        )
+    return ''.join(text)
