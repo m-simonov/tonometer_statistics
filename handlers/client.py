@@ -1,8 +1,10 @@
+from aiogram.types.callback_query import CallbackQuery
 import db
 import metering
 from aiogram import types
 from main import bot, dp
-
+from keybords.inline.choice_buttons import by_month
+from keybords.inline.callback_data import by_month_callback
 
 @dp.message_handler(commands=['start'])
 async def print_info(message: types.Message):
@@ -37,6 +39,27 @@ async def show_this_months_meterings(message: types.Message):
 
     text = metering.show_monthly_meterings(user, year, month)
     await message.answer(text)    
+
+@dp.message_handler(commands=['by_month_results'])
+async def by_month_command(message: types.Message):
+    user = message.from_user.id
+    await message.answer(
+        text="За какой месяц вывести результаты замеров?",
+        reply_markup=by_month
+        )
+
+@dp.callback_query_handler(by_month_callback.filter())
+async def show_meterings_by_month(call: CallbackQuery, callback_data: dict):
+    await call.answer(cache_time=2)
+    user = call.from_user.id
+    month = callback_data.get("month")
+    year = call.message.date.strftime('%Y')
+    
+    text = metering.show_monthly_meterings(user, year, month)
+    if text:
+        await call.message.answer(text=text)
+    else:
+        await call.message.answer(text="Нет данных")
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 async def write_metering(message: types.Message):
