@@ -42,7 +42,6 @@ async def show_this_months_meterings(message: types.Message):
 
 @dp.message_handler(commands=['by_month_results'])
 async def by_month_command(message: types.Message):
-    user = message.from_user.id
     await message.answer(
         text="За какой месяц вывести результаты замеров?",
         reply_markup=by_month

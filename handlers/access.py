@@ -1,16 +1,17 @@
 import db
+import metering
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
-from keybords.inline.access_buttons import cancel_state
-from keybords.inline.callback_data import state_callback
+from keybords.inline.access_buttons import cancel_state, open_users
+from keybords.inline.callback_data import open_users_callback, state_callback
 from main import dp
 from states.access_state import Access
 
 
 @dp.message_handler(commands=['open_access'], state=None)
 async def open_access_command(message: types.Message):
-    text = 'Введите юзернейм пользователся, чтобы открыть ему доступ'
+    text = 'Введите юзернейм или айди пользователся, чтобы открыть ему доступ'
     await message.answer(text=text, reply_markup=cancel_state)
     await Access.Q1.set()
 
@@ -21,7 +22,7 @@ async def open_for(message: types.Message, state: FSMContext):
     
     all_users = db.read_users()
     for row in all_users:
-        if open_for == row[1]:
+        if open_for == row[1] or open_for == row[0]:
             db.insert(
                 'access_rights',
                 {
@@ -33,6 +34,7 @@ async def open_for(message: types.Message, state: FSMContext):
                 "Результаты ваших замеров теперь доступны "
                 f"пользователю {open_for}"
             )
+            break
         else:
             text = (
                 f'Не удалось открыть доступ пользователю "{open_for}".\n'
@@ -52,3 +54,17 @@ async def cancel_q1(call: CallbackQuery, state: FSMContext):
     await call.message.answer(
         text='Действие отменено'
     )
+
+@dp.message_handler(commands=['user_results'])
+async def show_user_results(message: types.Message):
+    observer = message.from_user.id
+
+    text = "Результаты какого пользователя вы бы хотели посмотреть?"
+    await message.answer(text, reply_markup=open_users(observer))
+
+@dp.callback_query_handler(open_users_callback.filter())
+async def show_user_today(call: CallbackQuery, callback_data: dict):
+    user = callback_data.get("user")
+    date = call.message.date.date()
+    text = metering.show_today_meterings(user, date)
+    await call.message.answer(text)

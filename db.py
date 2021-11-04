@@ -1,5 +1,5 @@
 import sqlite3
-from typing import Dict, List
+from typing import Dict
 
 from aiogram import types
 
@@ -82,6 +82,31 @@ def read_monthly_meterings(user: str, year: str, month: str):
         f"WHERE date LIKE '%{year}-{month}%' "
         "AND user = ?",
         (user,)
+    ).fetchall()
+    base.close()
+    return selected
+
+def read_year_meterings(user: str, year: str):
+    base = sqlite3.connect('tonometer.db')
+    cur = base.cursor()
+
+    selected = cur.execute(
+        "SELECT * FROM meterings "
+        f"WHERE user = ? AND date LIKE '%{year}%'",
+        (user,)
+    ).fetchall()
+    base.close()
+    return selected
+
+def read_open_users(observer: str):
+    base = sqlite3.connect('tonometer.db')
+    cur = base.cursor()
+
+    selected = cur.execute(
+        "SELECT DISTINCT access_rights.user, users.username "
+        "FROM access_rights INNER JOIN users ON access_rights.user = users.tid "
+        "WHERE open_for = ?",
+        (observer,)
     ).fetchall()
     base.close()
     return selected
