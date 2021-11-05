@@ -66,4 +66,7 @@ def show_monthly_meterings(user: str, year: str, month: str):
             f"День: {metering[4]}\n"
             f"Вечер: {metering[5]}\n\n"
         )
-    return ''.join(text)
+    if text:
+        return ''.join(text)
+    else:
+        return "Нет данных"
