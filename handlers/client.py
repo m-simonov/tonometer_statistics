@@ -1,10 +1,16 @@
-from aiogram.types.callback_query import CallbackQuery
+import os
+from datetime import datetime
+
 import db
+import matplotlib.pyplot as plt
 import metering
 from aiogram import types
-from main import bot, dp
-from keybords.inline.choice_buttons import by_month
+from aiogram.types.base import InputFile
+from aiogram.types.callback_query import CallbackQuery
 from keybords.inline.callback_data import by_month_callback
+from keybords.inline.choice_buttons import by_month
+from main import bot, dp
+
 
 @dp.message_handler(commands=['start'])
 async def print_info(message: types.Message):
@@ -59,6 +65,54 @@ async def show_meterings_by_month(call: CallbackQuery, callback_data: dict):
         await call.message.answer(text=text)
     else:
         await call.message.answer(text="Нет данных")
+
+@dp.message_handler(commands=['show_month_graph'])
+async def show_month_graph(message: types.Message):
+    user = message.from_user.id
+    date = message.date.date()
+    year = date.strftime('%Y')
+    month = date.strftime('%m')
+    month_results = db.read_monthly_meterings(user, year, month)
+
+    days = []
+    morning_sys = []
+    morning_dia = []
+    morning_pulse = []
+    afternoon_sys = []
+    afternoon_dia = []
+    afternoon_pulse = []
+    evening_sys = []
+    evening_dia = []
+    evening_pulse = []
+    for row in month_results:
+        days.append(datetime.strptime(f'{row[2]}', '%Y-%m-%d').strftime('%d'))
+        morning_res = row[3]
+        afternoon_res = row[4]
+        evening_res = row[5]
+        if morning_res:
+            morning_sys.append(int(morning_res.split()[0]))
+            morning_dia.append(int(morning_res.split()[1]))
+            morning_pulse.append(int(morning_res.split()[2]))
+        else:
+            morning_sys.append(0)
+            morning_dia.append(0)
+            morning_pulse.append(0)
+    
+    bar = plt.bar(days, morning_sys)
+    plt.title("This month morning results")
+    plt.xlabel("Days")
+    plt.ylabel("SYS")
+
+    for rect, res in zip(bar, morning_sys):
+        height = rect.get_height()
+        plt.text(rect.get_x(), height, res)
+
+    plt.savefig("test_1.png")
+
+    img = open("test_1.png", "rb")
+    os.remove("test_1.png")
+
+    await message.answer_photo(photo=img)
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 async def write_metering(message: types.Message):
