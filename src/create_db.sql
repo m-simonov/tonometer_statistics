@@ -1,11 +1,11 @@
-CREATE TABLE users(
+CREATE TABLE IF NOT EXISTS users(
    tid INTEGER PRIMARY KEY,
    username VARCHAR(255),
    first_name VARCHAR(25),
    last_name VARCHAR(25)
 );
 
-CREATE TABLE meterings(
+CREATE TABLE IF NOT EXISTS meterings(
     id INTEGER PRIMARY KEY,
     user INTEGER NOT NULL,
     date DATE NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE meterings(
     FOREIGN KEY(user) REFERENCES users(tid)
 );
 
-CREATE TABLE access_rights(
+CREATE TABLE IF NOT EXISTS access_rights(
     id INTEGER PRIMARY KEY,
     user INTEGER NOT NULL,
     open_for INTEGER,
