@@ -1,0 +1,26 @@
+name: build-and-push
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    steps:
+    - name: checkout-repository
+      uses: actions/checkout@v2
+
+    - name: login
+      run: echo "${DOCKERHUB_TOKEN}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+
+    - name: build-and-push
+      run: |
+        docker build -t simonovm/tonometer_statistics:latest . -f docker_compose/docker/Dockerfile
+        docker push simonovm/tonometer_statistics:latest
