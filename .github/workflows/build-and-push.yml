@@ -20,7 +20,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        file: ./docker_compose/docker/Dockerfile
+        file: ./ci/docker/Dockerfile
         push: true
         tags: simonovm/tonometer_statistics:latest
 

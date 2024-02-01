@@ -4,7 +4,7 @@ RUN apt-get update -y
 RUN apt-get install -y sqlite3
 
 COPY src/. var/app/
-COPY --chown=www-data:www-data docker_compose/docker/scripts/* /
+COPY --chown=www-data:www-data ci/docker/scripts/* /
 RUN cd /var/app/ && pip install -r pip/requirements.txt
 
 VOLUME /var/app/
