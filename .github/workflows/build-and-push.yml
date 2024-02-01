@@ -37,4 +37,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /opt/tonometer_statistics/docker_compose;docker stop tonometer_statistics;docker rm tonometer_statistics;docker pull simonovm/tonometer_statistics:latest;docker-compose up -d
+            cd /opt/tonometer_statistics/docker_compose;docker stop tonometer_statistics;docker rm tonometer_statistics;docker pull simonovm/tonometer_statistics:latest;docker-compose up --build -d
