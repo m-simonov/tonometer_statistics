@@ -19,7 +19,7 @@ jobs:
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
-        context: ../
+        context: .
         file: ./docker_compose/docker/Dockerfile
         push: true
         tags: simonovm/tonometer_statistics:latest
