@@ -4,8 +4,6 @@ services:
 
   tonometer_statistics:
     image: simonovm/tonometer_statistics:latest
-    # build:
-    #   context: ../
-    #   dockerfile: docker_compose/docker/Dockerfile
+    container_name: tonometer_statistics
     volumes:
       - "../src/:/var/app"
