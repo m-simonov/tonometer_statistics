@@ -1,5 +1,7 @@
 FROM python:3.10-bullseye
 
+LABEL "com.centurylinklabs.watchtower.enable"="true"
+
 RUN apt-get update -y
 RUN apt-get install -y sqlite3
 
