@@ -11,6 +11,8 @@ db_name="tonometer.db"
 # Проверяем, существует ли файл SQL-запросов
 if [ ! -f "$sql_file" ]; then
     echo "Файл $sql_file не найден."
+    touch $sql_file
+    echo "Файл $sql_file создан."
     exit 1
 fi
 
