@@ -37,4 +37,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo "${{ secrets.ENV_FILE }}" > /opt/tonometer_statistics/.env;
             cd /opt/tonometer_statistics/;docker stop tonometer_statistics;docker rm tonometer_statistics;docker pull simonovm/tonometer_statistics:latest;docker-compose up --build -d

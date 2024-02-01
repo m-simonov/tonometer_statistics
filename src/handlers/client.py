@@ -126,4 +126,4 @@ async def write_metering(message: types.Message):
 
 @dp.message_handler()
 async def wrong_message(message: types.Message):
-    await message.answer("Некорректный формат ввода. Попробуйте ввести данные в формате '120 80 60'.")
+    await message.answer("Некорректный формат ввода. Попробуйте ввести данные в формате '120 80 60'")
