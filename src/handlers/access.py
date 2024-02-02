@@ -3,9 +3,9 @@ import metering
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
-from keybords.inline.access_buttons import (cancel_state, open_user_cmd,
+from keyboards.inline.access_buttons import (cancel_state, open_user_cmd,
                                             open_users)
-from keybords.inline.callback_data import (open_users_callback, state_callback,
+from keyboards.inline.callback_data import (open_users_callback, state_callback,
                                            user_cmd_callback)
 from main import dp
 from states.access_state import Access

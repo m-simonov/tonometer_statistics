@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 import metering
 from aiogram import types
 from aiogram.types.callback_query import CallbackQuery
-from keybords.inline.callback_data import by_month_callback
-from keybords.inline.choice_buttons import by_month
+from keyboards.inline.callback_data import by_month_callback
+from keyboards.inline.choice_buttons import by_month
 from main import dp
 
 

@@ -1,5 +1,5 @@
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from keybords.inline.callback_data import by_month_callback
+from keyboards.inline.callback_data import by_month_callback
 
 
 months = [
