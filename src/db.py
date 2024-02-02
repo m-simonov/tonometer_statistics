@@ -17,7 +17,7 @@ def add_user(message: types.Message):
         "INSERT OR IGNORE INTO "
         "users VALUES(?, ?, ?, ?)",
         (tid, user_name, first_name, last_name)
-        )
+    )
     base.commit()
     base.close()
 

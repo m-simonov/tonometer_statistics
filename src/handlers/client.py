@@ -53,7 +53,7 @@ async def by_month_command(message: types.Message):
     await message.answer(
         text="За какой месяц вывести результаты замеров?",
         reply_markup=by_month
-        )
+    )
 
 
 @dp.callback_query_handler(by_month_callback.filter())

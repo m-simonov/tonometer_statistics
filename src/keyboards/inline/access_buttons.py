@@ -16,7 +16,7 @@ cancel_state = InlineKeyboardMarkup(
 
 
 def open_users(observer: str):
-    users = db.read_open_users(observer=observer) 
+    users = db.read_open_users(observer=observer)
     open_users = InlineKeyboardMarkup(row_width=2)
     for user in users:
         open_users.add(

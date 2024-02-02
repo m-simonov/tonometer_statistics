@@ -3,10 +3,8 @@ import metering
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
-from keyboards.inline.access_buttons import (cancel_state, open_user_cmd,
-                                            open_users)
-from keyboards.inline.callback_data import (open_users_callback, state_callback,
-                                           user_cmd_callback)
+from keyboards.inline.access_buttons import cancel_state, open_user_cmd, open_users
+from keyboards.inline.callback_data import open_users_callback, state_callback, user_cmd_callback
 from main import dp
 from states.access_state import Access
 
@@ -24,6 +22,7 @@ async def open_for(message: types.Message, state: FSMContext):
     open_for = message.text
 
     all_users = db.read_users()
+    text = "Список пользователей пуст"
     for row in all_users:
         if open_for == row[1] or open_for == row[0]:
             db.insert(
@@ -51,7 +50,7 @@ async def open_for(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(state_callback.filter(command="cancel"),state=Access.Q1)
+@dp.callback_query_handler(state_callback.filter(command="cancel"), state=Access.Q1)
 async def cancel_q1(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=2)
     await state.finish()

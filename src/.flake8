@@ -12,6 +12,7 @@ ignore =
     E722,
     W503,
     W504
+    F811
 
 per-file-ignores =
     conftest.py: T201
