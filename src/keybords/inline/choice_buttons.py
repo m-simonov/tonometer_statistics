@@ -1,56 +1,23 @@
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from .callback_data import by_month_callback
+from keybords.inline.callback_data import by_month_callback
 
 
-by_month = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Январь", callback_data=by_month_callback.new(
-                month="01"
-            )),
-            InlineKeyboardButton(text="Июль", callback_data=by_month_callback.new(
-                month="07"
-            )),
-        ],
-        [
-           InlineKeyboardButton(text="Февраль", callback_data=by_month_callback.new(
-               month="02"
-           )),
-           InlineKeyboardButton(text="Август", callback_data=by_month_callback.new(
-               month="08"
-           )),
-        ],
-        [
-           InlineKeyboardButton(text="Март", callback_data=by_month_callback.new(
-               month="03"
-           )),
-           InlineKeyboardButton(text="Сентябрь", callback_data=by_month_callback.new(
-               month="09"
-           )),
-        ],
-        [
-           InlineKeyboardButton(text="Апрель", callback_data=by_month_callback.new(
-               month="04"
-           )),
-           InlineKeyboardButton(text="Октябрь", callback_data=by_month_callback.new(
-               month="10"
-           )),
-        ],
-        [
-           InlineKeyboardButton(text="Май", callback_data=by_month_callback.new(
-               month="05"
-           )),
-           InlineKeyboardButton(text="Ноябрь", callback_data=by_month_callback.new(
-               month="11"
-           )),
-        ],
-        [
-           InlineKeyboardButton(text="Июнь", callback_data=by_month_callback.new(
-               month="06"
-           )),
-           InlineKeyboardButton(text="Декабрь", callback_data=by_month_callback.new(
-               month="12"
-           )),
-        ],
-    ]
-)
+months = [
+    "Январь", "Февраль", "Март", "Апрель",
+    "Май", "Июнь", "Июль", "Август",
+    "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+]
+
+
+pairs = [months[i:i + 2] for i in range(0, len(months), 2)]
+
+
+keyboard = [
+    [
+        InlineKeyboardButton(text=pair[0], callback_data=by_month_callback.new(month=str(months.index(pair[0]) + 1).zfill(2))),
+        InlineKeyboardButton(text=pair[1], callback_data=by_month_callback.new(month=str(months.index(pair[1]) + 1).zfill(2)))
+    ] for pair in pairs
+]
+
+
+by_month = InlineKeyboardMarkup(inline_keyboard=keyboard)
