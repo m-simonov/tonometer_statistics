@@ -1,0 +1,19 @@
+[flake8]
+exclude =
+    # No need to traverse our git directory
+    .git,
+    # There's no value in checking cache directories
+    __pycache__,
+    # Django migrations
+    migrations
+
+ignore =
+    # Do not use bare except, specify exception instead (E722) https://www.flake8rules.com/rules/E722.html
+    E722,
+    W503,
+    W504
+
+per-file-ignores =
+    conftest.py: T201
+
+max-line-length = 160
