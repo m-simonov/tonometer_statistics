@@ -1,5 +1,5 @@
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from .callback_data import state_callback, open_users_callback, user_cmd_callback
+from keyboards.inline.callback_data import state_callback, open_users_callback, user_cmd_callback
 import db
 
 
@@ -14,6 +14,7 @@ cancel_state = InlineKeyboardMarkup(
     ]
 )
 
+
 def open_users(observer: str):
     users = db.read_open_users(observer=observer) 
     open_users = InlineKeyboardMarkup(row_width=2)
@@ -25,6 +26,7 @@ def open_users(observer: str):
             )
         )
     return open_users
+
 
 def open_user_cmd(user: str):
     user_commands = InlineKeyboardMarkup(

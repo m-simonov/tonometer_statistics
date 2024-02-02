@@ -82,17 +82,17 @@ async def show_month_graph(message: types.Message):
     morning_sys = []
     morning_dia = []
     morning_pulse = []
-    afternoon_sys = []
-    afternoon_dia = []
-    afternoon_pulse = []
-    evening_sys = []
-    evening_dia = []
-    evening_pulse = []
+    # afternoon_sys = []
+    # afternoon_dia = []
+    # afternoon_pulse = []
+    # evening_sys = []
+    # evening_dia = []
+    # evening_pulse = []
     for row in month_results:
         days.append(datetime.strptime(f'{row[2]}', '%Y-%m-%d').strftime('%d'))
         morning_res = row[3]
-        afternoon_res = row[4]
-        evening_res = row[5]
+        # afternoon_res = row[4]
+        # evening_res = row[5]
         if morning_res:
             morning_sys.append(int(morning_res.split()[0]))
             morning_dia.append(int(morning_res.split()[1]))

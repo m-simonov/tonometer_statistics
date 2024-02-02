@@ -7,7 +7,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# proxy_url = 'http://proxy.server:3128'
 BOT_TOKEN = os.environ.get('BOT_TOKEN')
 bot = Bot(BOT_TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())

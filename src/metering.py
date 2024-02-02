@@ -16,6 +16,7 @@ def determine_the_time():
         column = 'evening'
     return column
 
+
 def write_to_db(user: str, date: str, column: str, metering_result: str):
     today_meterings = db.read_meterings_by_date(user, date)
     if not today_meterings:
@@ -40,6 +41,7 @@ def write_to_db(user: str, date: str, column: str, metering_result: str):
         text = f"Результат замера '{metering_result}' записан"
     return text
 
+
 def show_today_meterings(user: str, date: str):
     meterings = db.read_meterings_by_date(user, date)
     if meterings:
@@ -55,6 +57,7 @@ def show_today_meterings(user: str, date: str):
     else:
         text = "Сегодняшние замеры еще не внесены"
     return text
+
 
 def show_monthly_meterings(user: str, year: str, month: str):
     this_month = db.read_monthly_meterings(user, year, month)

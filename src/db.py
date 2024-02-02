@@ -21,6 +21,7 @@ def add_user(message: types.Message):
     base.commit()
     base.close()
 
+
 def insert(table_name: str, column_values: Dict):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -37,6 +38,7 @@ def insert(table_name: str, column_values: Dict):
     base.commit()
     base.close()
 
+
 def update_metering(user: str, date: str, column: str, value: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -50,6 +52,7 @@ def update_metering(user: str, date: str, column: str, value: str):
     base.commit()
     base.close()
 
+
 def read_users():
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -59,6 +62,7 @@ def read_users():
     ).fetchall()
     base.close()
     return selected
+
 
 def read_meterings_by_date(user: str, date: str):
     base = sqlite3.connect('tonometer.db')
@@ -73,6 +77,7 @@ def read_meterings_by_date(user: str, date: str):
     base.close()
     return selected
 
+
 def read_monthly_meterings(user: str, year: str, month: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -86,6 +91,7 @@ def read_monthly_meterings(user: str, year: str, month: str):
     base.close()
     return selected
 
+
 def read_year_meterings(user: str, year: str):
     base = sqlite3.connect('tonometer.db')
     cur = base.cursor()
@@ -97,6 +103,7 @@ def read_year_meterings(user: str, year: str):
     ).fetchall()
     base.close()
     return selected
+
 
 def read_open_users(observer: str):
     base = sqlite3.connect('tonometer.db')
