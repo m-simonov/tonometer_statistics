@@ -1,5 +1,4 @@
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, as_declarative, declared_attr, mapped_column
 
 
 @as_declarative()
