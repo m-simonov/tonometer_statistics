@@ -45,9 +45,9 @@ def write_to_db(user: str, date: str, column: str, metering_result: str):
 def show_today_meterings(user: str, date: str):
     meterings = db.read_meterings_by_date(user, date)
     if meterings:
-        morning = meterings[0]
-        afternoon = meterings[1]
-        evening = meterings[2]
+        morning = meterings[0] or "-"
+        afternoon = meterings[1] or "-"
+        evening = meterings[2] or "-"
         text = (
             f"Дата: {date}\n\n"
             f"Утро: {morning}\n"
