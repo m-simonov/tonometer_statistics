@@ -35,7 +35,7 @@ async def print_info(message: types.Message):
 async def show_today_meterings(message: types.Message):
     user = message.from_user.id
     date = message.date.date()
-    text = metering.show_today_meterings(user, date)
+    text = await MeasurementService().get_today_meterings(user, date)
     await message.answer(text)
 
 
