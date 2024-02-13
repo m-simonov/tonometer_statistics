@@ -10,9 +10,6 @@ from db.repositories.user import UserRepository
 
 
 class MeasurementService:
-    # TODO: Реализовать Singletone или Monostate,
-    # чтобы была единая сессия
-
     def __init__(self) -> None:
         self.session: Optional[AsyncSession] = async_session_maker()
 
