@@ -1,14 +1,16 @@
 import os
 from datetime import datetime
 
-import db
 import matplotlib.pyplot as plt
-import metering
 from aiogram import types
 from aiogram.types.callback_query import CallbackQuery
+
+import db
+import metering
 from keyboards.inline.callback_data import by_month_callback
 from keyboards.inline.choice_buttons import by_month
 from main import dp
+from services.measurement import MeasurementService
 
 
 @dp.message_handler(commands=['start'])
@@ -26,7 +28,7 @@ async def print_info(message: types.Message):
         "слева от поля ввода сообщения."
     )
     await message.answer(text=text)
-    db.add_user(message)
+    await MeasurementService().add_user(message)
 
 
 @dp.message_handler(commands=['today_results'])
