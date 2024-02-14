@@ -47,7 +47,7 @@ class MeasurementService:
         except IntegrityError:
             return False
 
-    async def get_meterings(self, tid: int, date: datetime.date):
+    async def get_measurements(self, tid: int, date: datetime.date):
         async with self.session.begin():
             measurement = await MeasurementRepository(self.session).get(user=tid, date=date)
         if measurement:
@@ -59,7 +59,7 @@ class MeasurementService:
             )
         return "Сегодняшние замеры еще не внесены."
 
-    async def get_month_meterigns(self, tid: int, year: int, month: int):
+    async def get_month_measurements(self, tid: int, year: int, month: int):
         async with self.session.begin():
             month_meterings = await MeasurementRepository(self.session).get_month_meterings(
                 tid,
