@@ -3,7 +3,7 @@ import os
 from aiogram import types
 from dotenv import load_dotenv
 
-import db
+import database as db
 from main import dp
 
 

@@ -2,7 +2,7 @@ import datetime
 
 import pytz
 
-import db
+import database as db
 
 
 def determine_the_time():

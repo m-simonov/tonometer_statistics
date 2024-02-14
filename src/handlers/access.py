@@ -1,4 +1,4 @@
-import db
+import database as db
 import metering
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
