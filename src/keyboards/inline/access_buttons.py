@@ -1,6 +1,6 @@
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
 from keyboards.inline.callback_data import state_callback, open_users_callback, user_cmd_callback
-import db
+from services.user import UserService
 
 
 cancel_state = InlineKeyboardMarkup(
@@ -15,14 +15,14 @@ cancel_state = InlineKeyboardMarkup(
 )
 
 
-def open_users(observer: str):
-    users = db.read_open_users(observer=observer)
+async def open_users(observer: int):
+    users = await UserService().get_open_users(observer)
     open_users = InlineKeyboardMarkup(row_width=2)
     for user in users:
         open_users.add(
             InlineKeyboardButton(
-                text=f"{user[1]}",
-                callback_data=open_users_callback.new(user=user[0])
+                text=f"{user.username}",
+                callback_data=open_users_callback.new(user=user.tid)
             )
         )
     return open_users
