@@ -1,22 +1,13 @@
 from datetime import datetime
-from typing import Optional
 
 import pytz
-from aiogram import types
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from db.connection import async_session_maker
 from db.models.measurement import Measurement
-from db.models.user import User
 from db.repositories.measurement import MeasurementRepository
-from db.repositories.user import UserRepository
+from services.base import AbstractService
 
 
-class MeasurementService:
-    def __init__(self) -> None:
-        self.session: Optional[AsyncSession] = async_session_maker()
-
+class MeasurementService(AbstractService):
     @staticmethod
     def choose_day_time():
         msk_time = datetime.now(pytz.timezone('Europe/Moscow'))
@@ -28,24 +19,6 @@ class MeasurementService:
         else:
             column = "evening"
         return column
-
-    async def add_user(self, message: types.Message):
-        try:
-            async with self.session.begin():
-                await UserRepository(self.session).add(
-                    [
-                        User(
-                            tid=message.from_user.id,
-                            username=message.from_user.username,
-                            first_name=message.from_user.first_name,
-                            last_name=message.from_user.last_name,
-                        )
-                    ]
-                )
-                self.session.commit()
-                return True
-        except IntegrityError:
-            return False
 
     async def get_measurements(self, tid: int, date: datetime.date):
         async with self.session.begin():
