@@ -14,14 +14,14 @@ if [ ! -f "$sql_file" ]; then
     exit 1
 fi
 
-# Выполняем SQL-запросы к базе данных SQLite
-sqlite3 "$db_name" < "$sql_file"
+# # Выполняем SQL-запросы к базе данных SQLite
+# sqlite3 "$db_name" < "$sql_file"
 
-# Проверяем код возврата sqlite3
-if [ $? -eq 0 ]; then
-    echo "SQL-запросы успешно выполнены."
-else
-    echo "Ошибка выполнения SQL-запросов."
-fi
+# # Проверяем код возврата sqlite3
+# if [ $? -eq 0 ]; then
+#     echo "SQL-запросы успешно выполнены."
+# else
+#     echo "Ошибка выполнения SQL-запросов."
+# fi
 
 exec "$@"
