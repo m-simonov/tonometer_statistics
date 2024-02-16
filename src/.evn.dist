@@ -1,2 +1,5 @@
-BOT_TOKEN=
-admin_id=[]
+BOT__TOKEN=
+ADMINS__ID=[]
+DSN__DATABASE=
+
+SYSTEM__DEBUG
