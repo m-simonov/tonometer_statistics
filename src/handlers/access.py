@@ -1,11 +1,14 @@
-import db
-import metering
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
-from keyboards.inline.access_buttons import cancel_state, open_user_cmd, open_users
-from keyboards.inline.callback_data import open_users_callback, state_callback, user_cmd_callback
+
+from keyboards.inline.access_buttons import (cancel_state, open_user_cmd,
+                                             open_users)
+from keyboards.inline.callback_data import (open_users_callback,
+                                            state_callback, user_cmd_callback)
 from main import dp
+from services.access_rights import AccessRightsService
+from services.measurement import MeasurementService
 from states.access_state import Access
 
 
@@ -20,31 +23,7 @@ async def open_access_command(message: types.Message):
 async def open_for(message: types.Message, state: FSMContext):
     user = message.from_user.id
     open_for = message.text
-
-    all_users = db.read_users()
-    text = "Список пользователей пуст"
-    for row in all_users:
-        if open_for == row[1] or open_for == row[0]:
-            db.insert(
-                'access_rights',
-                {
-                    "user": user,
-                    "open_for": row[0]
-                }
-            )
-            text = (
-                "Результаты ваших замеров теперь доступны "
-                f"пользователю {open_for}"
-            )
-            break
-        else:
-            text = (
-                f'Не удалось открыть доступ пользователю "{open_for}".\n'
-                'Возможные причины:\n'
-                '1. Такого пользователя не существует\n'
-                f'2. "{open_for}" не является пользователем бота\n'
-                '3. Вы ввели неверный юзернейм'
-            )
+    text = await AccessRightsService().open_access(user, open_for)
 
     await message.answer(text)
     await state.finish()
@@ -64,7 +43,8 @@ async def select_user(message: types.Message):
     observer = message.from_user.id
 
     text = "Результаты какого пользователя вы бы хотели посмотреть?"
-    await message.answer(text, reply_markup=open_users(observer))
+    reply_markup = await open_users(observer)
+    await message.answer(text, reply_markup=reply_markup)
 
 
 @dp.callback_query_handler(open_users_callback.filter())
@@ -73,31 +53,34 @@ async def select_category(call: CallbackQuery, callback_data: dict):
     user = callback_data.get("user")
     text = "Какую категорию вы бы хотели посмотреть?"
     await call.message.edit_text(text, reply_markup=open_user_cmd(user))
-    # await call.message.edit_reply_markup(open_user_cmd(user))
 
 
 @dp.callback_query_handler(user_cmd_callback.filter(cmd="today"))
 async def show_today(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
-    user = callback_data.get("user")
-    date = call.message.date.date()
-    text = metering.show_today_meterings(user, date)
+    text = await MeasurementService().get_measurements(
+        tid=callback_data.get("user"),
+        date=call.message.date.date(),
+    )
     await call.message.answer(text)
 
 
 @dp.callback_query_handler(user_cmd_callback.filter(cmd="this_month"))
 async def show_user_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
-    user = callback_data.get("user")
+    # user = callback_data.get("user")
     date = call.message.date.date()
-    year = date.strftime('%Y')
-    month = date.strftime('%m')
 
-    text = metering.show_monthly_meterings(user, year, month)
+    # text = metering.show_monthly_meterings(user, year, month)
+    text = await MeasurementService().get_month_measurements(
+        tid=callback_data.get("user"),
+        year=date.year,
+        month=date.month,
+    )
     await call.message.answer(text)
 
 
-# TODO
+# @TODO
 # @dp.callback_query_handler(user_cmd_callback.filter(cmd="by_month"))
 # async def show_user_by_month(call: CallbackQuery, callback_data: dict):
 #     await call.answer(cache_time=2)
@@ -110,4 +93,5 @@ async def back_to_users(call: CallbackQuery, callback_data: dict):
     observer = call.from_user.id
 
     text = "Результаты какого пользователя вы бы хотели посмотреть?"
-    await call.message.edit_text(text, reply_markup=open_users(observer))
+    reply_markup = await open_users(observer)
+    await call.message.edit_text(text, reply_markup=reply_markup)

@@ -3,8 +3,8 @@ import os
 from aiogram import types
 from dotenv import load_dotenv
 
-import db
 from main import dp
+from services.user import UserService
 
 
 load_dotenv()
@@ -22,6 +22,5 @@ def auth_admin(func):
 @dp.message_handler(commands=['ppl'])
 @auth_admin
 async def show_users(message: types.Message):
-    users = db.read_users()
-    text = '\n'.join(map(str, enumerate(users, 1)))
+    text = await UserService().get_users_list()
     await message.answer(text)

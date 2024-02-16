@@ -1,14 +1,16 @@
 import os
 from datetime import datetime
 
-import db
 import matplotlib.pyplot as plt
-import metering
 from aiogram import types
 from aiogram.types.callback_query import CallbackQuery
+
+import db
 from keyboards.inline.callback_data import by_month_callback
 from keyboards.inline.choice_buttons import by_month
 from main import dp
+from services.measurement import MeasurementService
+from services.user import UserService
 
 
 @dp.message_handler(commands=['start'])
@@ -26,25 +28,26 @@ async def print_info(message: types.Message):
         "слева от поля ввода сообщения."
     )
     await message.answer(text=text)
-    db.add_user(message)
+    await UserService().add_user(message)
 
 
 @dp.message_handler(commands=['today_results'])
-async def show_today_meterings(message: types.Message):
-    user = message.from_user.id
-    date = message.date.date()
-    text = metering.show_today_meterings(user, date)
+async def show_today_measurements(message: types.Message):
+    text = await MeasurementService().get_measurements(
+        tid=message.from_user.id,
+        date=message.date.date(),
+    )
     await message.answer(text)
 
 
 @dp.message_handler(commands=['this_month_results'])
-async def show_this_months_meterings(message: types.Message):
-    user = message.from_user.id
+async def show_this_month_measurements(message: types.Message):
     date = message.date.date()
-    year = date.strftime('%Y')
-    month = date.strftime('%m')
-
-    text = metering.show_monthly_meterings(user, year, month)
+    text = await MeasurementService().get_month_measurements(
+        tid=message.from_user.id,
+        year=date.year,
+        month=date.month,
+    )
     await message.answer(text)
 
 
@@ -57,13 +60,14 @@ async def by_month_command(message: types.Message):
 
 
 @dp.callback_query_handler(by_month_callback.filter())
-async def show_meterings_by_month(call: CallbackQuery, callback_data: dict):
+async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
-    user = call.from_user.id
-    month = callback_data.get("month")
-    year = call.message.date.strftime('%Y')
 
-    text = metering.show_monthly_meterings(user, year, month)
+    text = await MeasurementService().get_month_measurements(
+        tid=call.from_user.id,
+        year=call.message.date.year,
+        month=callback_data.get("month"),
+    )
     if text:
         await call.message.answer(text=text)
     else:
@@ -120,13 +124,14 @@ async def show_month_graph(message: types.Message):
 
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
-async def write_metering(message: types.Message):
-    user = message.from_user.id
-    date = message.date.date()
-    metering_result = message.text
-
-    column = metering.determine_the_time()
-    text = metering.write_to_db(user, date, column, metering_result)
+async def write_measurement(message: types.Message):
+    measurement_service = MeasurementService()
+    text = await measurement_service.add_measurement(
+        tid=message.from_user.id,
+        date=message.date.date(),
+        column=measurement_service.choose_day_time(),
+        value=message.text,
+    )
     await message.answer(text)
 
 
