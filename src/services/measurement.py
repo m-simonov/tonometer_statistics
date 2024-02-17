@@ -1,10 +1,28 @@
+from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 import pytz
 
 from db.models.measurement import Measurement
 from db.repositories.measurement import MeasurementRepository
 from services.base import AbstractService
+
+
+@dataclass
+class MeasurementData:
+    date: datetime.date
+    morning: Optional[str]
+    afternoon: Optional[str]
+    evening: Optional[str]
+
+    def __str__(self) -> str:
+        return (
+            f"<u>Дата: {self.date}</u>\n"
+            f"Утро: <code>{self.morning or '-'}</code>\n"
+            f"День: <code>{self.afternoon or '-'}</code>\n"
+            f"Вечер: <code>{self.evening or '-'}</code>"
+        )
 
 
 class MeasurementService(AbstractService):
@@ -24,30 +42,30 @@ class MeasurementService(AbstractService):
         async with self.session.begin():
             measurement = await MeasurementRepository(self.session).get(user=tid, date=date)
         if measurement:
-            return (
-                f"Дата: {date}\n\n"
-                f"Утро: {measurement.morning or '-'}\n"
-                f"День: {measurement.afternoon or '-'}\n"
-                f"Вечер: {measurement.evening or '-'}"
-            )
+            return str(MeasurementData(
+                date=date,
+                morning=measurement.morning,
+                afternoon=measurement.afternoon,
+                evening=measurement.evening,
+            ))
         return "Сегодняшние замеры еще не внесены."
 
     async def get_month_measurements(self, tid: int, year: int, month: int):
         async with self.session.begin():
-            month_meterings = await MeasurementRepository(self.session).get_month_meterings(
+            month_measurements = await MeasurementRepository(self.session).get_month_measurements(
                 tid,
                 year,
                 month,
             )
 
         text = []
-        for metering in month_meterings:
-            text.append(
-                f"Дата: {metering.date}\n"
-                f"Утро: {metering.morning}\n"
-                f"День: {metering.afternoon}\n"
-                f"Вечер: {metering.evening}\n\n"
-            )
+        for measurement in month_measurements:
+            text.append(str(MeasurementData(
+                date=measurement.date,
+                morning=measurement.morning,
+                afternoon=measurement.afternoon,
+                evening=measurement.evening,
+            )) + "\n\n")
 
         if text:
             return ''.join(text)
