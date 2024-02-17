@@ -26,9 +26,9 @@ class MeasurementService(AbstractService):
         if measurement:
             return (
                 f"Дата: {date}\n\n"
-                f"Утро: {measurement.morning}\n"
-                f"День: {measurement.afternoon}\n"
-                f"Вечер: {measurement.evening}"
+                f"Утро: {measurement.morning or '-'}\n"
+                f"День: {measurement.afternoon or '-'}\n"
+                f"Вечер: {measurement.evening or '-'}"
             )
         return "Сегодняшние замеры еще не внесены."
 
