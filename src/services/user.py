@@ -1,6 +1,5 @@
 from aiogram import types
 from sqlalchemy.exc import IntegrityError
-from db.models.access_rights import AccessRights
 
 from db.models.user import User
 from db.repositories.access_rights import AccessRightsRepository
@@ -42,7 +41,6 @@ class UserService(AbstractService):
                 user=tid
             )
             open_users = await UserRepository(self.session).list(
-                # tid=[ar.user for ar in open_tids]
                 User.tid.in_([ar.open_for for ar in access_rights])
             )
         return open_users

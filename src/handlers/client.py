@@ -37,7 +37,7 @@ async def show_today_measurements(message: types.Message):
         tid=message.from_user.id,
         date=message.date.date(),
     )
-    await message.answer(text)
+    await message.answer(text, parse_mode="HTML")
 
 
 @dp.message_handler(commands=['this_month_results'])
@@ -48,7 +48,7 @@ async def show_this_month_measurements(message: types.Message):
         year=date.year,
         month=date.month,
     )
-    await message.answer(text)
+    await message.answer(text, parse_mode="HTML")
 
 
 @dp.message_handler(commands=['by_month_results'])
