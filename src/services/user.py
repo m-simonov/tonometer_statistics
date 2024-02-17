@@ -22,7 +22,7 @@ class UserService(AbstractService):
                         )
                     ]
                 )
-                self.session.commit()
+                await self.session.commit()
                 return True
         except IntegrityError:
             return False
