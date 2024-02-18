@@ -73,15 +73,15 @@ class MeasurementService(AbstractService):
 
     async def add_measurement(self, tid: int, date: datetime.date, column: str, value: str):
         async with self.session.begin():
-            measurement = await MeasurementRepository(self.session).get(user=tid, date=date)
-            is_added = getattr(measurement, column) if measurement else None
-            if not is_added:
+            measurement_repository = MeasurementRepository(self.session)
+            measurement = await measurement_repository.get(user=tid, date=date)
+            if not measurement:
                 item = Measurement(
                     user=tid,
                     date=date,
                 )
                 setattr(item, column, value)
-                await MeasurementRepository(self.session).add([item])
+                await measurement_repository.add([item])
                 await self.session.commit()
             else:
                 setattr(measurement, column, value)
