@@ -25,6 +25,16 @@ class AbstractRepository:
         result = await self.session.scalar(stmt)
         return result
 
+    async def get_or_create(self, **kwargs):
+        instance = await self.get(**kwargs)
+        if instance:
+            return instance
+
+        instance = self.model(**kwargs)
+        self.session.add(instance)
+        await self.session.commit()
+        return instance
+
     async def list(self, *args, **kwargs):
         stmt = select(self.model)
         if args:
