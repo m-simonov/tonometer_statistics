@@ -9,6 +9,7 @@ import db
 from keyboards.inline.callback_data import by_month_callback
 from keyboards.inline.choice_buttons import by_month
 from main import dp
+from services.button import ButtonService
 from services.measurement import MeasurementService
 from services.user import UserService
 
@@ -53,9 +54,11 @@ async def show_this_month_measurements(message: types.Message):
 
 @dp.message_handler(commands=['by_month_results'])
 async def by_month_command(message: types.Message):
+    reply_markup = await ButtonService().get_by_month_reply_markup(message.from_user.id)
     await message.answer(
         text="За какой месяц вывести результаты замеров?",
-        reply_markup=by_month
+        # reply_markup=by_month
+        reply_markup=reply_markup,
     )
 
 
