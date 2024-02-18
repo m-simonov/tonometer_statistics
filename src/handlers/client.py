@@ -69,7 +69,7 @@ async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
         month=callback_data.get("month"),
     )
     if text:
-        await call.message.answer(text=text)
+        await call.message.answer(text=text, parse_mode="HTML")
     else:
         await call.message.answer(text="Нет данных")
 
