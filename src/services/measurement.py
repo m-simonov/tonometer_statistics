@@ -77,7 +77,8 @@ class MeasurementService(AbstractService):
             measurement_repository = MeasurementRepository(self.session)
             measurement = await measurement_repository.get(user=tid, date=date)
             logger.debug(
-                f"Measurement from DB: {[{c: getattr(measurement, c)} for c in measurement.__table__.columns.keys()]}"
+                "Measurement from DB: "
+                f"{[{c: getattr(measurement, c)} for c in measurement.__table__.columns.keys()] if measurement else None}"
             )
             if not measurement:
                 item = Measurement(
