@@ -4,6 +4,7 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from aiogram import types
 from aiogram.types.callback_query import CallbackQuery
+from loguru import logger
 
 import db
 from keyboards.inline.callback_data import by_month_callback
@@ -125,6 +126,7 @@ async def show_month_graph(message: types.Message):
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 async def write_measurement(message: types.Message):
+    logger.debug(f"Message user id: {message.from_user.id}, message date: {message.date.date()}, message text: {message.text}")
     measurement_service = MeasurementService()
     text = await measurement_service.add_measurement(
         tid=message.from_user.id,

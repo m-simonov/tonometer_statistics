@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 import pytz
+from loguru import logger
 
 from db.models.measurement import Measurement
 from db.repositories.measurement import MeasurementRepository
@@ -75,6 +76,10 @@ class MeasurementService(AbstractService):
         async with self.session.begin():
             measurement_repository = MeasurementRepository(self.session)
             measurement = await measurement_repository.get(user=tid, date=date)
+            logger.debug(
+                "Measurement from DB: "
+                f"{[{c: getattr(measurement, c)} for c in measurement.__table__.columns.keys()] if measurement else None}"
+            )
             if not measurement:
                 item = Measurement(
                     user=tid,
@@ -83,7 +88,9 @@ class MeasurementService(AbstractService):
                 setattr(item, column, value)
                 await measurement_repository.add([item])
                 await self.session.commit()
+                logger.debug("A new measurement has been created")
             else:
                 setattr(measurement, column, value)
                 await self.session.commit()
+                logger.debug("The measurement has been updated")
         return f"Результат замера '{value}' записан."
