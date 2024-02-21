@@ -18,24 +18,25 @@ class ButtonService(AbstractService):
 
         pairs = []
         async with self.session.begin():
-            measurement_repository = MeasurementRepository(self.session)
+            year_stats = await MeasurementRepository(self.session).count_months_measurements_all(tid, year)
+            month_count_mapping = {i["month"]: i["count"] for i in year_stats}
             for i in range(0, len(months), 2):
                 pair = months[i:i + 2]
-                first_month_number = str(months.index(pair[0]) + 1).zfill(2)
-                first_month_number_count = await measurement_repository.count_month_measurements(tid, year, first_month_number)
+                first_month_number = months.index(pair[0]) + 1
+                first_month_number_count = month_count_mapping.get(first_month_number, 0)
 
-                second_month_number = str(months.index(pair[1]) + 1).zfill(2)
-                second_month_number_count = await measurement_repository.count_month_measurements(tid, year, second_month_number)
+                second_month_number = months.index(pair[1]) + 1
+                second_month_number_count = month_count_mapping.get(second_month_number, 0)
 
                 pairs.append(
                     [
                         [
                             pair[0] + f" ({str(first_month_number_count)})",
-                            first_month_number,
+                            str(first_month_number).zfill(2),
                         ],
                         [
                             pair[1] + f" ({str(second_month_number_count)})",
-                            second_month_number,
+                            str(second_month_number).zfill(2),
                         ]
                     ]
                 )
