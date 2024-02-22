@@ -3,7 +3,7 @@ from datetime import datetime
 from typing import Optional
 
 import pytz
-from loguru import logger
+from logger import logger
 
 from db.models.measurement import Measurement
 from db.repositories.measurement import MeasurementRepository
@@ -77,9 +77,8 @@ class MeasurementService(AbstractService):
             measurement_repository = MeasurementRepository(self.session)
             measurement = await measurement_repository.get(user=tid, date=date)
             logger.debug(
-                "Measurement from DB: "
-                f"{[{c: getattr(measurement, c)} for c in measurement.__table__.columns.keys()] if measurement else None}"
-            )
+                "Measurement from DB",
+                **{c: getattr(measurement, c) for c in measurement.__table__.columns.keys()} if measurement else None)
             if not measurement:
                 item = Measurement(
                     user=tid,

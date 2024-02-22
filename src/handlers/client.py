@@ -4,11 +4,11 @@ from datetime import datetime
 import matplotlib.pyplot as plt
 from aiogram import types
 from aiogram.types.callback_query import CallbackQuery
-from loguru import logger
 
 import db
+from common.utils import log_call
 from keyboards.inline.callback_data import by_month_callback
-from keyboards.inline.choice_buttons import by_month
+from logger import logger
 from main import dp
 from services.button import ButtonService
 from services.measurement import MeasurementService
@@ -16,6 +16,8 @@ from services.user import UserService
 
 
 @dp.message_handler(commands=['start'])
+@log_call
+@logger.catch
 async def print_info(message: types.Message):
     text = (
         "Привет! Этот бот предназначен для ведения дневника давления.\n\n"
@@ -34,6 +36,8 @@ async def print_info(message: types.Message):
 
 
 @dp.message_handler(commands=['today_results'])
+@log_call
+@logger.catch
 async def show_today_measurements(message: types.Message):
     text = await MeasurementService().get_measurements(
         tid=message.from_user.id,
@@ -43,6 +47,8 @@ async def show_today_measurements(message: types.Message):
 
 
 @dp.message_handler(commands=['this_month_results'])
+@log_call
+@logger.catch
 async def show_this_month_measurements(message: types.Message):
     date = message.date.date()
     text = await MeasurementService().get_month_measurements(
@@ -54,16 +60,19 @@ async def show_this_month_measurements(message: types.Message):
 
 
 @dp.message_handler(commands=['by_month_results'])
+@log_call
+@logger.catch
 async def by_month_command(message: types.Message):
     reply_markup = await ButtonService().get_by_month_reply_markup(message.from_user.id)
     await message.answer(
         text="За какой месяц вывести результаты замеров?",
-        # reply_markup=by_month
         reply_markup=reply_markup,
     )
 
 
 @dp.callback_query_handler(by_month_callback.filter())
+@log_call
+@logger.catch
 async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
 
@@ -79,6 +88,8 @@ async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
 
 
 @dp.message_handler(commands=['show_month_graph'])
+@log_call
+@logger.catch
 async def show_month_graph(message: types.Message):
     user = message.from_user.id
     date = message.date.date()
@@ -128,8 +139,9 @@ async def show_month_graph(message: types.Message):
 
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
+@log_call
+@logger.catch
 async def write_measurement(message: types.Message):
-    logger.debug(f"Message user id: {message.from_user.id}, message date: {message.date.date()}, message text: {message.text}")
     measurement_service = MeasurementService()
     text = await measurement_service.add_measurement(
         tid=message.from_user.id,
@@ -141,5 +153,7 @@ async def write_measurement(message: types.Message):
 
 
 @dp.message_handler()
+@log_call
+@logger.catch
 async def wrong_message(message: types.Message):
     await message.answer("Некорректный формат ввода. Попробуйте ввести данные в формате '120 80 60'.")
