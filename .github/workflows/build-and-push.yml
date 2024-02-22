@@ -14,8 +14,8 @@ jobs:
     - name: Login to Docker Hub
       uses: docker/login-action@v1
       with:
-        username: ${{ env.DOCKERHUB__USERNAME }}
-        password: ${{ env.DOCKERHUB__TOKEN }}
+        username: ${{ vars.DOCKERHUB__USERNAME }}
+        password: ${{ vars.DOCKERHUB__TOKEN }}
     - name: Build Docker Image
       uses: docker/build-push-action@v2
       with:
@@ -32,10 +32,10 @@ jobs:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ env.SSH__HOST }}
-          username: ${{ env.SSH__USERNAME }}
-          key: ${{ env.SSH__KEY }}
-          port: ${{ env.SSH__PORT }}
+          host: ${{ vars.SSH__HOST }}
+          username: ${{ vars.SSH__USERNAME }}
+          key: ${{ vars.SSH__KEY }}
+          port: ${{ vars.SSH__PORT }}
           script: |
-            echo "${{ env.ENV_FILE }}" > /opt/tonometer_statistics/.env;
+            echo "${{ vars.ENV_FILE }}" > /opt/tonometer_statistics/.env;
             cd /opt/tonometer_statistics/;docker stop tonometer_statistics;docker rm tonometer_statistics;docker pull simonovm/tonometer_statistics:latest;docker-compose up --build -d
