@@ -37,5 +37,8 @@ jobs:
           key: ${{ secrets.SSH__KEY }}
           port: ${{ secrets.SSH__PORT }}
           script: |
-            echo '${{ vars.ENV_FILE }}\nBOT__TOKEN=${{ secrets.BOT__TOKEN }}\nADMINS__ID=${{ secrets.ADMINS__ID }}\nLOGTAIL__TOKEN=${{ secrets.LOGTAIL__TOKEN }}' > /opt/tonometer_statistics/.env;
+            echo "${{ vars.ENV_FILE }}" >> /opt/tonometer_statistics/.env;
+            echo "BOT__TOKEN=${{ secrets.BOT__TOKEN }}" >> /opt/tonometer_statistics/.env;
+            echo "ADMINS__ID=${{ secrets.ADMINS__ID }}" >> /opt/tonometer_statistics/.env;
+            echo "LOGTAIL__TOKEN=${{ secrets.LOGTAIL__TOKEN }}" >> /opt/tonometer_statistics/.env;
             cd /opt/tonometer_statistics/;docker stop tonometer_statistics;docker rm tonometer_statistics;docker pull simonovm/tonometer_statistics:latest;docker-compose up --build -d
