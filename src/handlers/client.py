@@ -71,7 +71,6 @@ async def by_month_command(message: types.Message):
 
 
 @dp.callback_query_handler(by_month_callback.filter())
-@log_call
 @logger.catch
 async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
