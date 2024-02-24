@@ -148,6 +148,7 @@ async def write_measurement(message: types.Message):
         column=measurement_service.choose_day_time(),
         value=message.text,
     )
+    await UserService(measurement_service.session).add_user(message)
     await message.answer(text)
 
 
