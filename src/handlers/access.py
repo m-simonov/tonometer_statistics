@@ -79,16 +79,17 @@ async def show_user_month(call: CallbackQuery, callback_data: dict):
 
 
 # @TODO
-# @dp.callback_query_handler(user_cmd_callback.filter(cmd="by_month"))
-# async def show_user_by_month(call: CallbackQuery, callback_data: dict):
-#     await call.answer(cache_time=2)
-#     tid = callback_data.get("user")
+@dp.callback_query_handler(user_cmd_callback.filter(cmd="by_month"))
+async def show_user_by_month(call: CallbackQuery, callback_data: dict):
+    await call.answer(cache_time=2)
+    # tid = callback_data.get("user")
 
-#     reply_markup = await ButtonService().get_by_month_reply_markup(tid)
-#     await call.message.answer(
-#         text="За какой месяц вывести результаты замеров?",
-#         reply_markup=reply_markup,
-#     )
+    # reply_markup = await ButtonService().get_by_month_reply_markup(tid)
+    # await call.message.answer(
+    #     text="За какой месяц вывести результаты замеров?",
+    #     reply_markup=reply_markup,
+    # )
+    await call.message.answer(text="Функция находится в разработке")
 
 
 @dp.callback_query_handler(user_cmd_callback.filter(cmd="back"))
