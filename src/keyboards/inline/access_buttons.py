@@ -21,7 +21,7 @@ async def open_users(observer: int):
     for user in users:
         open_users.add(
             InlineKeyboardButton(
-                text=f"{user.username}",
+                text=f"{user.first_name} {user.last_name or ''} {user.username or ''}",
                 callback_data=open_users_callback.new(user=user.tid)
             )
         )
