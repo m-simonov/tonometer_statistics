@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from db.models.user import User
 from db.repositories.access_rights import AccessRightsRepository
 from db.repositories.user import UserRepository
+from logger import logger
 from services.base import AbstractService
 
 
@@ -38,9 +39,12 @@ class UserService(AbstractService):
     async def get_open_users(self, tid: int):
         async with self.session.begin():
             access_rights = await AccessRightsRepository(self.session).list(
-                user=tid
+                open_for=tid
             )
+            logger.debug("access_rights result", access_rights=[(ar.user, ar.open_for) for ar in access_rights])
+
             open_users = await UserRepository(self.session).list(
-                User.tid.in_([ar.open_for for ar in access_rights])
+                User.tid.in_([ar.user for ar in access_rights])
             )
+            logger.debug("open_users result", open_users=[ou.username for ou in open_users])
         return open_users
