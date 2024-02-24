@@ -62,29 +62,33 @@ async def show_today(call: CallbackQuery, callback_data: dict):
         tid=callback_data.get("user"),
         date=call.message.date.date(),
     )
-    await call.message.answer(text)
+    await call.message.answer(text, parse_mode="HTML")
 
 
 @dp.callback_query_handler(user_cmd_callback.filter(cmd="this_month"))
 async def show_user_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
-    # user = callback_data.get("user")
     date = call.message.date.date()
 
-    # text = metering.show_monthly_meterings(user, year, month)
     text = await MeasurementService().get_month_measurements(
         tid=callback_data.get("user"),
         year=date.year,
         month=date.month,
     )
-    await call.message.answer(text)
+    await call.message.answer(text, parse_mode="HTML")
 
 
 # @TODO
 # @dp.callback_query_handler(user_cmd_callback.filter(cmd="by_month"))
 # async def show_user_by_month(call: CallbackQuery, callback_data: dict):
 #     await call.answer(cache_time=2)
-#     user = callback_data.get("user")
+#     tid = callback_data.get("user")
+
+#     reply_markup = await ButtonService().get_by_month_reply_markup(tid)
+#     await call.message.answer(
+#         text="За какой месяц вывести результаты замеров?",
+#         reply_markup=reply_markup,
+#     )
 
 
 @dp.callback_query_handler(user_cmd_callback.filter(cmd="back"))
