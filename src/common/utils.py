@@ -12,6 +12,7 @@ def log_call(func):
         logger.info(
             f"{func.__name__} is called",
             user_id=message.from_user.id,
+            user_first_name=message.from_user.first_name,
             message_date=message.date.isoformat(),
             message_text=message.text,
         )

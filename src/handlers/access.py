@@ -2,6 +2,7 @@ from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
 
+from common.utils import log_call
 from keyboards.inline.access_buttons import (cancel_state, open_user_cmd,
                                              open_users)
 from keyboards.inline.callback_data import (open_users_callback,
@@ -13,6 +14,7 @@ from states.access_state import Access
 
 
 @dp.message_handler(commands=['open_access'], state=None)
+@log_call
 async def open_access_command(message: types.Message):
     text = 'Введите юзернейм или айди пользователся, чтобы открыть ему доступ'
     await message.answer(text=text, reply_markup=cancel_state)
@@ -39,6 +41,7 @@ async def cancel_q1(call: CallbackQuery, state: FSMContext):
 
 
 @dp.message_handler(commands=['user_results'])
+@log_call
 async def select_user(message: types.Message):
     observer = message.from_user.id
 
