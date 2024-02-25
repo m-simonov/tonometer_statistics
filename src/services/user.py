@@ -32,7 +32,7 @@ class UserService(AbstractService):
             users = await UserRepository(self.session).list()
         text = ""
         for user in users:
-            text = text + f"{user.id} - {user.tid} - {user.username} - {user.first_name} - {user.last_name}\n"
+            text = text + f"{user.id} - {user.tid} - {user.username} - {user.first_name} - {user.last_name} - {user.date_joined}\n"
         return text
 
     # @TODO: add sqlalchemy join
