@@ -13,7 +13,7 @@ def auth_admin(func):
     return wrapper
 
 
-@dp.message_handler(commands=['ppl'])
+@dp.message(commands=['ppl'])
 @auth_admin
 async def show_users(message: types.Message):
     text = await UserService().get_users_list()

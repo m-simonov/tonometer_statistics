@@ -1,13 +1,19 @@
-from aiogram import Bot, Dispatcher, executor
-from aiogram.contrib.fsm_storage.memory import MemoryStorage
+import asyncio
+from aiogram import Bot, Dispatcher
+
 
 from settings import BOT__TOKEN
 
 
-bot = Bot(BOT__TOKEN)
-dp = Dispatcher(bot, storage=MemoryStorage())
+dp = Dispatcher()
+
+
+async def main(dp: Dispatcher) -> None:
+    bot = Bot(BOT__TOKEN, parse_mode='HTML')
+    await dp.start_polling(bot)
+
+
 
 if __name__ == '__main__':
-    from handlers import dp
-
-    executor.start_polling(dp)
+    from handlers import dp as hdp
+    asyncio.run(main(hdp))
