@@ -13,7 +13,7 @@ from services.measurement import MeasurementService
 from states.access_state import Access
 
 
-@dp.message_handler(commands=['open_access'], state=None)
+@dp.message(commands=['open_access'], state=None)
 @log_call
 async def open_access_command(message: types.Message):
     text = 'Введите юзернейм или айди пользователся, чтобы открыть ему доступ'
@@ -21,7 +21,7 @@ async def open_access_command(message: types.Message):
     await Access.Q1.set()
 
 
-@dp.message_handler(state=Access.Q1)
+@dp.message(state=Access.Q1)
 async def open_for(message: types.Message, state: FSMContext):
     user = message.from_user.id
     open_for = message.text
@@ -31,7 +31,7 @@ async def open_for(message: types.Message, state: FSMContext):
     await state.finish()
 
 
-@dp.callback_query_handler(state_callback.filter(command="cancel"), state=Access.Q1)
+@dp.callback_query(state_callback.filter(command="cancel"), state=Access.Q1)
 async def cancel_q1(call: CallbackQuery, state: FSMContext):
     await call.answer(cache_time=2)
     await state.finish()
@@ -40,7 +40,7 @@ async def cancel_q1(call: CallbackQuery, state: FSMContext):
     )
 
 
-@dp.message_handler(commands=['user_results'])
+@dp.message(commands=['user_results'])
 @log_call
 async def select_user(message: types.Message):
     observer = message.from_user.id
@@ -50,7 +50,7 @@ async def select_user(message: types.Message):
     await message.answer(text, reply_markup=reply_markup)
 
 
-@dp.callback_query_handler(open_users_callback.filter())
+@dp.callback_query(open_users_callback.filter())
 async def select_category(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
     user = callback_data.get("user")
@@ -58,7 +58,7 @@ async def select_category(call: CallbackQuery, callback_data: dict):
     await call.message.edit_text(text, reply_markup=open_user_cmd(user))
 
 
-@dp.callback_query_handler(user_cmd_callback.filter(cmd="today"))
+@dp.callback_query(user_cmd_callback.filter(cmd="today"))
 async def show_today(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
     text = await MeasurementService().get_measurements(
@@ -68,7 +68,7 @@ async def show_today(call: CallbackQuery, callback_data: dict):
     await call.message.answer(text, parse_mode="HTML")
 
 
-@dp.callback_query_handler(user_cmd_callback.filter(cmd="this_month"))
+@dp.callback_query(user_cmd_callback.filter(cmd="this_month"))
 async def show_user_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
     date = call.message.date.date()
@@ -82,7 +82,7 @@ async def show_user_month(call: CallbackQuery, callback_data: dict):
 
 
 # @TODO
-@dp.callback_query_handler(user_cmd_callback.filter(cmd="by_month"))
+@dp.callback_query(user_cmd_callback.filter(cmd="by_month"))
 async def show_user_by_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
     # tid = callback_data.get("user")
@@ -95,7 +95,7 @@ async def show_user_by_month(call: CallbackQuery, callback_data: dict):
     await call.message.answer(text="Функция находится в разработке")
 
 
-@dp.callback_query_handler(user_cmd_callback.filter(cmd="back"))
+@dp.callback_query(user_cmd_callback.filter(cmd="back"))
 async def back_to_users(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
     observer = call.from_user.id

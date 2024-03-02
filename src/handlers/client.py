@@ -15,7 +15,7 @@ from services.measurement import MeasurementService
 from services.user import UserService
 
 
-@dp.message_handler(commands=['start'])
+@dp.message(commands=['start'])
 @log_call
 @logger.catch
 async def print_info(message: types.Message):
@@ -35,7 +35,7 @@ async def print_info(message: types.Message):
     await UserService().add_user(message)
 
 
-@dp.message_handler(commands=['today_results'])
+@dp.message(commands=['today_results'])
 @log_call
 @logger.catch
 async def show_today_measurements(message: types.Message):
@@ -46,7 +46,7 @@ async def show_today_measurements(message: types.Message):
     await message.answer(text, parse_mode="HTML")
 
 
-@dp.message_handler(commands=['this_month_results'])
+@dp.message(commands=['this_month_results'])
 @log_call
 @logger.catch
 async def show_this_month_measurements(message: types.Message):
@@ -59,7 +59,7 @@ async def show_this_month_measurements(message: types.Message):
     await message.answer(text, parse_mode="HTML")
 
 
-@dp.message_handler(commands=['by_month_results'])
+@dp.message(commands=['by_month_results'])
 @log_call
 @logger.catch
 async def by_month_command(message: types.Message):
@@ -70,7 +70,7 @@ async def by_month_command(message: types.Message):
     )
 
 
-@dp.callback_query_handler(by_month_callback.filter())
+@dp.callback_query(by_month_callback.filter())
 @logger.catch
 async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=2)
@@ -86,7 +86,7 @@ async def show_measurements_by_month(call: CallbackQuery, callback_data: dict):
         await call.message.answer(text="Нет данных")
 
 
-@dp.message_handler(commands=['show_month_graph'])
+@dp.message(commands=['show_month_graph'])
 @log_call
 @logger.catch
 async def show_month_graph(message: types.Message):
@@ -137,7 +137,7 @@ async def show_month_graph(message: types.Message):
     await message.answer_photo(photo=img)
 
 
-@dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
+@dp.message(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
 @log_call
 @logger.catch
 async def write_measurement(message: types.Message):
@@ -151,7 +151,7 @@ async def write_measurement(message: types.Message):
     await message.answer(text)
 
 
-@dp.message_handler()
+@dp.message()
 @log_call
 @logger.catch
 async def wrong_message(message: types.Message):
