@@ -6,6 +6,7 @@ from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
 from main import bot
+from services.feedback import FeedbackService
 from settings import ADMINS__ID
 
 import db
@@ -153,7 +154,8 @@ async def start_feedback(message: types.Message):
 @log_call
 @logger.catch
 async def collect_feedback(message: types.Message, state: FSMContext):
-    await bot.send_message(ADMINS__ID[0], f"Новый отзыв от {message.from_user.id}:\n{message.text}")
+    await bot.send_message(ADMINS__ID[0], f"Новый отзыв от {message.from_user.username} | {message.from_user.id}:\n{message.text}")
+    await FeedbackService().add_feedback(message.from_user.id, message.text)
     await message.answer("Спасибо за отзыв! Ваше сообщение было передано администратору.")
     await state.finish()
 
