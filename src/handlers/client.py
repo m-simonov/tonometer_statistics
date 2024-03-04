@@ -5,18 +5,18 @@ import matplotlib.pyplot as plt
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
-from main import bot
-from services.feedback import FeedbackService
-from settings import ADMINS__ID
 
 import db
 from common.utils import log_call
-from keyboards.inline.callback_data import by_month_callback
+from keyboards.inline.base import cancel_state
+from keyboards.inline.callback_data import by_month_callback, state_callback
 from logger import logger
-from main import dp
+from main import bot, dp
 from services.button import ButtonService
+from services.feedback import FeedbackService
 from services.measurement import MeasurementService
 from services.user import UserService
+from settings import ADMINS__ID
 from states.feedback_state import FeedbackState
 
 
@@ -146,7 +146,10 @@ async def show_month_graph(message: types.Message):
 @log_call
 @logger.catch
 async def start_feedback(message: types.Message):
-    await message.answer("Ваш отзыв будет передан разработчику. Пожалуйста, введите сообщение.")
+    await message.answer(
+        "Ваш отзыв будет передан разработчику. Пожалуйста, введите сообщение.",
+        reply_markup=cancel_state,
+    )
     await FeedbackState.waiting_for_feedback.set()
 
 
@@ -158,6 +161,15 @@ async def collect_feedback(message: types.Message, state: FSMContext):
     await FeedbackService().add_feedback(message.from_user.id, message.text)
     await message.answer("Спасибо за отзыв! Ваше сообщение было передано разработчику.")
     await state.finish()
+
+
+@dp.callback_query_handler(state_callback.filter(command="cancel"), state=FeedbackState.waiting_for_feedback)
+async def cancel_q1(call: CallbackQuery, state: FSMContext):
+    await call.answer(cache_time=2)
+    await state.finish()
+    await call.message.answer(
+        text='Действие отменено'
+    )
 
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")

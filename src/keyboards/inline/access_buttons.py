@@ -1,18 +1,6 @@
 from aiogram.types.inline_keyboard import InlineKeyboardButton, InlineKeyboardMarkup
-from keyboards.inline.callback_data import state_callback, open_users_callback, user_cmd_callback
+from keyboards.inline.callback_data import open_users_callback, user_cmd_callback
 from services.user import UserService
-
-
-cancel_state = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(
-                text="Отмена",
-                callback_data=state_callback.new(command="cancel")
-            )
-        ]
-    ]
-)
 
 
 async def open_users(observer: int):

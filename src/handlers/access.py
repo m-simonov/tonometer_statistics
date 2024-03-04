@@ -3,8 +3,8 @@ from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
 
 from common.utils import log_call
-from keyboards.inline.access_buttons import (cancel_state, open_user_cmd,
-                                             open_users)
+from keyboards.inline.access_buttons import open_user_cmd, open_users
+from keyboards.inline.base import cancel_state
 from keyboards.inline.callback_data import (open_users_callback,
                                             state_callback, user_cmd_callback)
 from main import dp
