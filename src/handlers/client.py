@@ -3,7 +3,11 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 from aiogram import types
+from aiogram.dispatcher.storage import FSMContext
 from aiogram.types.callback_query import CallbackQuery
+from main import bot
+from services.feedback import FeedbackService
+from settings import ADMINS__ID
 
 import db
 from common.utils import log_call
@@ -13,6 +17,7 @@ from main import dp
 from services.button import ButtonService
 from services.measurement import MeasurementService
 from services.user import UserService
+from states.feedback_state import FeedbackState
 
 
 @dp.message_handler(commands=['start'])
@@ -135,6 +140,24 @@ async def show_month_graph(message: types.Message):
     os.remove("test_1.png")
 
     await message.answer_photo(photo=img)
+
+
+@dp.message_handler(commands=['send_feedback'])
+@log_call
+@logger.catch
+async def start_feedback(message: types.Message):
+    await message.answer("Ваш отзыв будет передан администратору. Пожалуйста, введите сообщение.")
+    await FeedbackState.waiting_for_feedback.set()
+
+
+@dp.message_handler(state=FeedbackState.waiting_for_feedback)
+@log_call
+@logger.catch
+async def collect_feedback(message: types.Message, state: FSMContext):
+    await bot.send_message(ADMINS__ID[0], f"Новый отзыв от {message.from_user.username} | {message.from_user.id}:\n{message.text}")
+    await FeedbackService().add_feedback(message.from_user.id, message.text)
+    await message.answer("Спасибо за отзыв! Ваше сообщение было передано администратору.")
+    await state.finish()
 
 
 @dp.message_handler(regexp=r"^([1-9]\d{1,2}) ([1-9]\d{1,2}) ([1-9]\d{1,2})$")
