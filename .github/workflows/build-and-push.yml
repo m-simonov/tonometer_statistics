@@ -37,6 +37,7 @@ jobs:
           key: ${{ secrets.SSH__KEY }}
           port: ${{ secrets.SSH__PORT }}
           script: |
+            rm -rf /opt/tonometer_statistics/.env;
             echo "${{ vars.ENV_FILE }}" >> /opt/tonometer_statistics/.env;
             echo "BOT__TOKEN=${{ secrets.BOT__TOKEN }}" >> /opt/tonometer_statistics/.env;
             echo "ADMINS__ID=${{ secrets.ADMINS__ID }}" >> /opt/tonometer_statistics/.env;
