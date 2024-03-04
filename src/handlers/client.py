@@ -146,7 +146,7 @@ async def show_month_graph(message: types.Message):
 @log_call
 @logger.catch
 async def start_feedback(message: types.Message):
-    await message.answer("Ваш отзыв будет передан администратору. Пожалуйста, введите сообщение.")
+    await message.answer("Ваш отзыв будет передан разработчику. Пожалуйста, введите сообщение.")
     await FeedbackState.waiting_for_feedback.set()
 
 
@@ -156,7 +156,7 @@ async def start_feedback(message: types.Message):
 async def collect_feedback(message: types.Message, state: FSMContext):
     await bot.send_message(ADMINS__ID[0], f"Новый отзыв от {message.from_user.username} | {message.from_user.id}:\n{message.text}")
     await FeedbackService().add_feedback(message.from_user.id, message.text)
-    await message.answer("Спасибо за отзыв! Ваше сообщение было передано администратору.")
+    await message.answer("Спасибо за отзыв! Ваше сообщение было передано разработчику.")
     await state.finish()
 
 
