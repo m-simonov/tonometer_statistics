@@ -11,4 +11,4 @@ class FeedbackService(AbstractService):
             await FeedbackRepository(self.session).add(
                 [Feedback(user=tid, text=text)],
             )
-        logger.debug("Feedback added", user=tid, text=str)
+        logger.debug("Feedback added", user=tid, text=text)
